@@ -11,13 +11,13 @@
     <style>
         :root {
             --primary: #6c63ff;
-            --primary-light: #edeaff;
+            --primary-light: #f5f6fa;
             --accent: #ffb400;
             --bg: #f7f8fa;
             --card-bg: #fff;
-            --text: #222;
-            --text-light: #888;
-            --border: #e0e0e0;
+            --text: #181818;
+            --text-light: #444;
+            --border: #d0d0d0;
             --shadow: 0 2px 16px rgba(108,99,255,0.08);
             --radius: 18px;
         }
@@ -123,9 +123,9 @@
         }
 
         .dropdown-btn {
-            background: rgba(138, 43, 226, 0.1);
-            color: #b19cd9;
-            border: 1px solid rgba(255, 140, 0, 0.2);
+            background: var(--primary);
+            color: #fff;
+            border: none;
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
             cursor: pointer;
@@ -139,24 +139,23 @@
         }
 
         .dropdown-btn:hover {
-            background: rgba(138, 43, 226, 0.25);
-            border-color: rgba(255, 140, 0, 0.5);
+            background: var(--accent);
+            color: var(--text);
             transform: translateY(-2px);
             box-shadow: 0 0 15px rgba(255, 140, 0, 0.2);
         }
 
         .dropdown-btn.active {
-            background: rgba(138, 43, 226, 0.4);
-            border-color: #FFB400;
-            color: #d8bfd8;
-            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5), inset 0 0 10px rgba(255, 140, 0, 0.2);
-            text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+            background: var(--accent);
+            color: var(--text);
+            box-shadow: 0 0 20px rgba(255, 180, 0, 0.2), inset 0 0 10px rgba(255, 180, 0, 0.1);
+            text-shadow: none;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
-            background: rgba(15, 23, 41, 0.95);
+            background: var(--card-bg);
             min-width: 200px;
             box-shadow: 0 8px 32px rgba(255, 140, 0, 0.2);
             padding: 0.5rem 0;
@@ -183,7 +182,7 @@
             width: 100%;
             text-align: left;
             background: transparent;
-            color: #b19cd9;
+            color: var(--primary);
             border: none;
             padding: 0.75rem 1.5rem;
             cursor: pointer;
@@ -196,17 +195,17 @@
         }
 
         .dropdown-content button:hover {
-            background: rgba(138, 43, 226, 0.2);
-            color: #d8bfd8;
-            border-left-color: #FFB400;
+            background: var(--primary-light);
+            color: var(--accent);
+            border-left-color: var(--accent);
             padding-left: 2rem;
         }
 
         .dropdown-content button.active {
-            background: rgba(138, 43, 226, 0.3);
-            color: #FFB400;
-            border-left-color: #FFB400;
-            box-shadow: inset 0 0 10px rgba(255, 140, 0, 0.1);
+            background: var(--primary-light);
+            color: var(--accent);
+            border-left-color: var(--accent);
+            box-shadow: inset 0 0 10px rgba(255, 180, 0, 0.08);
         }
 
         .dropdown-content.show {
@@ -312,13 +311,12 @@
         }
 
         h2 {
-            color: #b19cd9;
+            color: var(--primary);
             font-size: 1.8rem;
             margin-bottom: 1.5rem;
-            font-weight: 300;
+            font-weight: 600;
             letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255, 140, 0, 0.4);
-            animation: tubeGlow 4s ease-in-out infinite;
+            text-shadow: none;
             position: relative;
             padding-bottom: 0.5rem;
         }
@@ -335,27 +333,27 @@
         }
 
         h3 {
-            color: #d8bfd8;
+            color: var(--primary);
             font-size: 1.2rem;
             margin-top: 1.5rem;
             margin-bottom: 1rem;
-            font-weight: 400;
-            text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+            font-weight: 500;
+            text-shadow: none;
         }
 
         p {
-            color: #c0c0c0;
+            color: var(--text-light);
             margin-bottom: 1.5rem;
-            font-weight: 300;
+            font-weight: 400;
         }
 
         input[type="text"],
         input[type="number"],
         select,
         textarea {
-            background: rgba(30, 40, 70, 0.6);
-            color: #e0e0e0;
-            border: 1px solid rgba(255, 140, 0, 0.2);
+            background: #fff;
+            color: var(--text);
+            border: 1px solid var(--border);
             padding: 0.8rem 1rem;
             border-radius: 6px;
             font-size: 1rem;
@@ -503,8 +501,8 @@
         }
 
         .ck-content {
-            color: #e0e0e0 !important;
-            background: rgba(30, 40, 70, 0.4) !important;
+            color: var(--text) !important;
+            background: #fff !important;
         }
 
         ul {
@@ -631,9 +629,9 @@
         <p>A contemplative space for focused learning and growth</p>
     </header>
 
-    <nav class="nav-container">
-        <div class="dropdown">
-            <button class="dropdown-btn" onclick="toggleDropdown()">☰ Menu</button>
+            <div class="app-logo">✦ Student Helper ✦</div>
+            <p style="font-size:1.1rem; font-weight:500; color:var(--text-light); margin-top:0.5rem;">A creative, ethical workspace for 2026</p>
+        </header>
             <div id="dropdownContent" class="dropdown-content">
                 <button onclick="showTabFromDropdown('editor')">Text Editor</button>
                 <button onclick="showTabFromDropdown('calculator')">Calculator</button>
@@ -651,6 +649,7 @@
                                     <p>Track assignments, deadlines, and study plans. Use this tool to stay organized and honest in your work.</p>
                                     <div id="plannerContainer" style="background:rgba(30,40,70,0.3); border:1px solid rgba(255,140,0,0.2); border-radius:8px; padding:1.5rem; margin-bottom:2rem;">
                                         <h3 style="color:#FFB400;">Add Assignment / Task</h3>
+                    <div class="tab-indicator" id="tabIndicator"></div>
                                         <input type="text" id="taskTitle" placeholder="Task / Assignment" style="width:100%;max-width:400px;margin-bottom:0.5rem;">
                                         <input type="date" id="taskDate" style="width:100%;max-width:200px;margin-bottom:0.5rem;">
                                         <button onclick="addTask()">Add Task</button>
