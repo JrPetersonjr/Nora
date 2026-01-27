@@ -2,7 +2,7 @@
   "name": "Student Helper",
   "short_name": "StudentHelper",
   "description": "A distraction-free student assistant tool",
-  "start_url": "/student_helper.html#editor",
+  "start_url": "/index.html#editor",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
