@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Helper</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(8px); }
+        }
+
+        @keyframes gentleRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes tubeGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 180, 0, 0.5), 0 0 20px rgba(255, 140, 0, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(255, 180, 0, 0.8), 0 0 40px rgba(255, 140, 0, 0.5); }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes softPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.4), inset 0 0 20px rgba(255, 140, 0, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(255, 180, 0, 0.6), inset 0 0 30px rgba(255, 140, 0, 0.15); }
+        }
+
+        body {
+            font-family: 'Segoe UI', Trebuchet MS, sans-serif;
+            background: linear-gradient(-45deg, #0a0e27 0%, #1a1f3a 25%, #0f1729 50%, #1a1a35 75%, #0a0e27 100%);
+            background-size: 400% 400%;
+            animation: shimmer 15s ease infinite;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 0;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 140, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(177, 156, 217, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        header {
+            background: rgba(15, 23, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+            padding: 2rem 0;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.2), inset 0 1px 0 rgba(255, 180, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #b19cd9;
+            margin: 0 2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: tubeGlow 3s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        header p {
+            color: #888;
+            margin: 0.5rem 2rem 0;
+            font-size: 0.9rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-container {
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            box-shadow: inset 0 1px 0 rgba(255, 180, 0, 0.1);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: rgba(138, 43, 226, 0.1);
+            color: #b19cd9;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(138, 43, 226, 0.25);
+            border-color: rgba(255, 140, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.2);
+        }
+
+        .dropdown-btn.active {
+            background: rgba(138, 43, 226, 0.4);
+            border-color: #FFB400;
+            color: #d8bfd8;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5), inset 0 0 10px rgba(255, 140, 0, 0.2);
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(15, 23, 41, 0.95);
+            min-width: 200px;
+            box-shadow: 0 8px 32px rgba(255, 140, 0, 0.2);
+            padding: 0.5rem 0;
+            z-index: 1;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 140, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-content button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            color: #b19cd9;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-content button:hover {
+            background: rgba(138, 43, 226, 0.2);
+            color: #d8bfd8;
+            border-left-color: #FFB400;
+            padding-left: 2rem;
+        }
+
+        .dropdown-content button.active {
+            background: rgba(138, 43, 226, 0.3);
+            color: #FFB400;
+            border-left-color: #FFB400;
+            box-shadow: inset 0 0 10px rgba(255, 140, 0, 0.1);
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            list-style: none;
+        }
+
+        .nav-tabs button {
+            background: rgba(138, 43, 226, 0.1);
+            color: #b19cd9;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tabs button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 180, 0, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-tabs button:hover {
+            background: rgba(138, 43, 226, 0.25);
+            border-color: rgba(255, 140, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.2);
+        }
+
+        .nav-tabs button:hover::before {
+            left: 100%;
+        }
+
+        .nav-tabs button.active {
+            background: rgba(138, 43, 226, 0.4);
+            border-color: #FFB400;
+            color: #d8bfd8;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5), inset 0 0 10px rgba(255, 140, 0, 0.2);
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        main::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 140, 0, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: gentleRotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        .tabcontent {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tabcontent.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #b19cd9;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.4);
+            animation: tubeGlow 4s ease-in-out infinite;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 140, 0, 0.8), transparent);
+            border-radius: 1px;
+        }
+
+        h3 {
+            color: #d8bfd8;
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+        }
+
+        p {
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            background: rgba(30, 40, 70, 0.6);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: inset 0 0 10px rgba(255, 140, 0, 0.05);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            background: rgba(30, 40, 70, 0.8);
+            border-color: #FFB400;
+            outline: none;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.3), inset 0 0 10px rgba(255, 140, 0, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(100, 20, 200, 0.2) 100%);
+            color: #d8bfd8;
+            border: 1px solid rgba(255, 140, 0, 0.3);
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 0.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.2), inset 0 0 10px rgba(255, 140, 0, 0.05);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 180, 0, 0.4) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.5) 0%, rgba(100, 20, 200, 0.4) 100%);
+            border-color: #FFB400;
+            box-shadow: 0 0 25px rgba(255, 140, 0, 0.5), inset 0 0 15px rgba(255, 140, 0, 0.15);
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+        }
+
+        button:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            background: rgba(30, 40, 70, 0.4);
+            border-left: 3px solid #FFB400;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.15), inset 0 0 10px rgba(255, 140, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 180, 0, 0.4), transparent);
+        }
+
+        .result-box:hover {
+            background: rgba(30, 40, 70, 0.6);
+            border-left-color: #FFD700;
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.25), inset 0 0 15px rgba(255, 140, 0, 0.1);
+        }
+
+        .result-box ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .result-box ul li {
+            color: #c0c0c0;
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .result-box ul li:before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            color: #b19cd9;
+        }
+
+        a {
+            color: #FFB400;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+            text-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+        }
+
+        a:hover {
+            color: #FFD700;
+            border-bottom-color: #FFB400;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.8);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+            max-width: 400px;
+            margin: 1rem 0;
+        }
+
+        .calc-display {
+            grid-column: span 4;
+            background: rgba(10, 14, 39, 0.8);
+            color: #FFB400;
+            padding: 1.5rem;
+            font-size: 2rem;
+            text-align: right;
+            border: 2px solid rgba(255, 140, 0, 0.4);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            word-wrap: break-word;
+            word-break: break-all;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.3), inset 0 0 20px rgba(255, 140, 0, 0.1);
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.8);
+            animation: softPulse 3s ease-in-out infinite;
+        }
+
+        .calc-grid button {
+            padding: 1.2rem 0.5rem;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .ck-editor__main {
+            min-height: 400px;
+            background: rgba(30, 40, 70, 0.4) !important;
+        }
+
+        .ck-content {
+            color: #e0e0e0 !important;
+            background: rgba(30, 40, 70, 0.4) !important;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+        }
+
+        ul li {
+            margin-bottom: 0.8rem;
+            color: #c0c0c0;
+        }
+
+        iframe {
+            border-radius: 8px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .playlist-btn {
+            margin: 0 !important;
+        }
+
+        .playlist-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .playlist-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .nav-tabs button {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>✦ Student Helper ✦</h1>
+        <p>A contemplative space for focused learning and growth</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown()">☰ Menu</button>
+            <div id="dropdownContent" class="dropdown-content">
+                <button onclick="showTabFromDropdown('editor')">Text Editor</button>
+                <button onclick="showTabFromDropdown('calculator')">Calculator</button>
+                <button onclick="showTabFromDropdown('search')">Search</button>
+                <button onclick="showTabFromDropdown('thesaurus')">Thesaurus</button>
+                <button onclick="showTabFromDropdown('factcheck')">Fact Check</button>
+                <button onclick="showTabFromDropdown('aichat')">Ask AI</button>
+                <button onclick="showTabFromDropdown('mindmap')">Mind Map & Notes</button>
+                <button onclick="showTabFromDropdown('music')">Music</button>
+                <button onclick="showTabFromDropdown('flashcards')">Flashcards & Quizzes</button>
+                <button onclick="showTabFromDropdown('planner')">Calendar & Planner</button>
+                <button onclick="showTabFromDropdown('video')">Videos</button>
+                                <div id="tab-planner" class="tabcontent">
+                                    <h2>Calendar & Planner</h2>
+                                    <p>Track assignments, deadlines, and study plans. Use this tool to stay organized and honest in your work.</p>
+                                    <div id="plannerContainer" style="background:rgba(30,40,70,0.3); border:1px solid rgba(255,140,0,0.2); border-radius:8px; padding:1.5rem; margin-bottom:2rem;">
+                                        <h3 style="color:#FFB400;">Add Assignment / Task</h3>
+                                        <input type="text" id="taskTitle" placeholder="Task / Assignment" style="width:100%;max-width:400px;margin-bottom:0.5rem;">
+                                        <input type="date" id="taskDate" style="width:100%;max-width:200px;margin-bottom:0.5rem;">
+                                        <button onclick="addTask()">Add Task</button>
+                                    </div>
+                                    <div id="taskList" style="margin-bottom:2rem;"></div>
+                                    <div id="calendarView" style="background:rgba(30,40,70,0.2); border:1px solid rgba(255,140,0,0.1); border-radius:8px; padding:1.5rem;">
+                                        <h3 style="color:#FFB400;">Calendar</h3>
+                                        <div id="calendarGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.5rem;"></div>
+                                    </div>
+                                    <p style="color:#b19cd9; font-size:0.9rem; margin-top:1.5rem;">Academic Integrity Reminder: Use the planner to manage your own work and deadlines. Do not use it to coordinate cheating or share answers.</p>
+                                </div>
+                        <div id="tab-flashcards" class="tabcontent">
+                            <h2>Flashcards & Quizzes</h2>
+                            <p>Create, review, and quiz yourself with flashcards. Use this tool to reinforce your learning—never to share answers for cheating.</p>
+                            <div id="flashcardCreator" style="background:rgba(30,40,70,0.3); border:1px solid rgba(255,140,0,0.2); border-radius:8px; padding:1.5rem; margin-bottom:2rem;">
+                                <h3 style="color:#FFB400;">Create Flashcard</h3>
+                                <input type="text" id="flashcardQuestion" placeholder="Question / Term" style="width:100%;max-width:400px;margin-bottom:0.5rem;">
+                                <input type="text" id="flashcardAnswer" placeholder="Answer / Definition" style="width:100%;max-width:400px;margin-bottom:0.5rem;">
+                                <button onclick="addFlashcard()">Add Flashcard</button>
+                            </div>
+                            <div id="flashcardList" style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;"></div>
+                            <div id="quizSection" style="background:rgba(30,40,70,0.2); border:1px solid rgba(255,140,0,0.1); border-radius:8px; padding:1.5rem;">
+                                <h3 style="color:#FFB400;">Quiz Yourself</h3>
+                                <button onclick="startQuiz()">Start Quiz</button>
+                                <div id="quizArea" style="margin-top:1rem;"></div>
+                            </div>
+                            <p style="color:#b19cd9; font-size:0.9rem; margin-top:1.5rem;">Academic Integrity Reminder: Use flashcards and quizzes to test your own knowledge. Do not use them to share or memorize answers for cheating.</p>
+                        </div>
+                <button onclick="showTabFromDropdown('resources')">Resources</button>
+                <button onclick="showTabFromDropdown('aiethics')">AI Ethics</button>
+                    <div id="tab-mindmap" class="tabcontent">
+                        <h2>Mind Map & Sticky Notes</h2>
+                        <p>Brainstorm, plan, and organize your ideas visually. Use this space for honest, creative thinking—never for copying answers.</p>
+                        <div id="mindMapContainer" style="background:rgba(30,40,70,0.3); border:1px solid rgba(255,140,0,0.2); border-radius:8px; padding:1.5rem; min-height:300px; margin-bottom:2rem;">
+                            <button onclick="addMindMapNode()" style="margin-bottom:1rem;">Add Node</button>
+                            <div id="mindMapNodes" style="display:flex; flex-wrap:wrap; gap:1rem;"></div>
+                        </div>
+                        <div id="stickyNotesContainer" style="background:rgba(30,40,70,0.2); border:1px solid rgba(255,140,0,0.1); border-radius:8px; padding:1.5rem;">
+                            <h3 style="color:#FFB400;">Sticky Notes</h3>
+                            <button onclick="addStickyNote()" style="margin-bottom:1rem;">Add Note</button>
+                            <div id="stickyNotes" style="display:flex; flex-wrap:wrap; gap:1rem;"></div>
+                        </div>
+                        <p style="color:#b19cd9; font-size:0.9rem; margin-top:1.5rem;">Academic Integrity Reminder: Use mind maps and notes to develop your own understanding. Do not use them to share or store answers for cheating.</p>
+                    </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div id="tab-editor" class="tabcontent active">
+            <h2>Text Editor</h2>
+            <p>Write and refine your thoughts. Check grammar, format citations, and detect AI-generated content.</p>
+            <div id="editor-content"></div>
+            <br>
+            <button onclick="startVoiceInput()">🎤 Voice Input</button>
+            <button onclick="readAloud()">🔊 Read Aloud</button>
+            <br>
+            <button onclick="checkGrammar()">Check Grammar</button>
+            <select id="format">
+                <option value="apa">APA</option>
+                <option value="mla">MLA</option>
+                <option value="chicago">Chicago</option>
+            </select>
+            <button onclick="formatText()">Citation Guide</button>
+            <button onclick="toggleCitationGenerator()">Citation Generator</button>
+            <div id="formatGuide"></div>
+            <div id="citationGenerator" style="display:none; margin:1.5rem 0; background:rgba(30,40,70,0.3); border:1px solid rgba(255,140,0,0.2); border-radius:8px; padding:1.5rem;">
+                <h3 style="color:#FFB400;">Citation Generator</h3>
+                <p style="color:#c0c0c0;">Enter your source details and select a style. Always double-check and cite honestly!</p>
+                <label>Type:
+                    <select id="citeType">
+                        <option value="book">Book</option>
+                        <option value="article">Article</option>
+                        <option value="website">Website</option>
+                    </select>
+                </label>
+                <div id="citeFields"></div>
+                <label>Style:
+                    <select id="citeStyle">
+                        <option value="apa">APA</option>
+                        <option value="mla">MLA</option>
+                        <option value="chicago">Chicago</option>
+                    </select>
+                </label>
+                <button onclick="generateCitation()">Generate Citation</button>
+                <div id="citationResult" style="margin-top:1rem;"></div>
+                <p style="color:#b19cd9; font-size:0.9rem; margin-top:1.5rem;">Academic Integrity Reminder: Use citations to give credit. Do not use AI or this tool to fabricate sources. Always check your institution's policies.</p>
+            </div>
+            <br>
+            <button onclick="checkAI()">Analyze Content</button>
+            <button onclick="generateText()">Generate Text</button>
+            <div id="aiCheckerResult"></div>
+                    <div id="plagiarismChecker" style="margin:2rem 0; background:rgba(30,40,70,0.3); border:1px solid rgba(255,140,0,0.2); border-radius:8px; padding:1.5rem;">
+                        <h3 style="color:#FFB400;">Plagiarism Checker</h3>
+                        <p style="color:#c0c0c0;">Paste your text below to check for originality. <strong>Never copy others' work. Use this tool to ensure your writing is your own and properly cited.</strong></p>
+                        <textarea id="plagiarismText" rows="6" style="width:100%; max-width:600px; background:rgba(30,40,70,0.6); color:#e0e0e0; border:1px solid rgba(255,140,0,0.2); border-radius:6px; margin-bottom:1rem;"></textarea>
+                        <div style="margin-bottom:1rem;">
+                            <a href="https://www.quetext.com/" target="_blank" style="display:inline-block; margin-right:1rem; color:#FFB400;">Quetext (Free)</a>
+                            <a href="https://plagiarismdetector.net/" target="_blank" style="display:inline-block; margin-right:1rem; color:#FFB400;">PlagiarismDetector.net</a>
+                            <a href="https://www.prepostseo.com/plagiarism-checker" target="_blank" style="display:inline-block; color:#FFB400;">PrePostSEO</a>
+                        </div>
+                        <p style="color:#b19cd9; font-size:0.9rem; margin-top:1.5rem;">Academic Integrity Reminder: Plagiarism is a serious offense. Use this tool to check your work, not to bypass learning. Always cite your sources and write in your own words.</p>
+                    </div>
+        </div>
+
+        <div id="tab-calculator" class="tabcontent">
+            <h2>Calculator</h2>
+            <p>Quick calculations for when you need them.</p>
+            <div class="calc-grid">
+                <div class="calc-display" id="display">0</div>
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button onclick="appendToDisplay('+')">+</button>
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button onclick="appendToDisplay('-')">−</button>
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button onclick="appendToDisplay('*')">×</button>
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">•</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="appendToDisplay('/')">/</button>
+            </div>
+            <button onclick="clearDisplay()" style="margin-top: 1rem;">Clear</button>
+        </div>
+
+        <div id="tab-search" class="tabcontent">
+            <h2>Search Engine</h2>
+            <p>Find information. Remember to evaluate sources critically and think for yourself.</p>
+            <form id="searchForm" action="https://www.google.com/search" method="get" target="_blank">
+                <input type="text" id="searchInput" name="q" placeholder="What are you looking for?">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <div id="tab-thesaurus" class="tabcontent">
+            <h2>Thesaurus</h2>
+            <p>Find synonyms to expand your vocabulary and refine your writing.</p>
+            <input type="text" id="wordInput" placeholder="Enter a word">
+            <button onclick="getSynonyms()">Find Synonyms</button>
+            <div id="thesaurusResult"></div>
+        </div>
+
+        <div id="tab-factcheck" class="tabcontent">
+            <h2>Fact Checker</h2>
+            <p>Verify statements and claims using trusted fact-checking resources.</p>
+            <input type="text" id="factInput" placeholder="Enter statement to fact-check">
+            <button onclick="factCheck()">Fact Check</button>
+            <div id="factCheckResult"></div>
+        </div>
+
+        <div id="tab-aichat" class="tabcontent">
+            <h2>Ask AI</h2>
+            <p>Ask questions and get thoughtful responses. Use this to explore ideas, get explanations, or brainstorm.</p>
+            
+            <div id="chatContainer" style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem; height: 400px; overflow-y: auto; margin-bottom: 1.5rem; display: flex; flex-direction: column;">
+                <div id="chatMessages" style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="color: #888; text-align: center; padding: 2rem 1rem;">
+                        <p>Start a conversation. Ask me anything.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="aiQuestion" placeholder="Ask your question..." style="flex: 1;">
+                <button onclick="askAI()" style="margin: 0;">Ask</button>
+            </div>
+            <p style="font-size: 0.85rem; color: #888; margin-top: 1rem;">💡 Tip: Ask about concepts, explanations, writing help, study strategies, or anything else on your mind.</p>
+        </div>
+
+        <div id="tab-music" class="tabcontent">
+            <h2>Music for Focus</h2>
+            <p>Curated open-source & creative commons electronic music. All royalty-free, all stay in this window.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                
+                <!-- FMA -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🔊 Free Music Archive</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">Massive CC library with underground electronic</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="https://freemusicarchive.org/genre/Techno" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">Techno</a>
+                        <a href="https://freemusicarchive.org/genre/House" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">House</a>
+                        <a href="https://freemusicarchive.org/genre/Dub" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">Dub</a>
+                        <a href="https://freemusicarchive.org/genre/Downtempo" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">Downtempo</a>
+                    </div>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">License: CC‑BY, CC‑BY‑SA</p>
+                </div>
+
+                <!-- OSM -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🎚️ Open Source Music</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">YouTube channel + GitHub. CC tracks for creators.</p>
+                    <a href="https://www.youtube.com/@OpenSourceMusicOSM" target="_blank" style="display: block; padding: 0.8rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; margin-bottom: 1rem;">Visit YouTube Channel</a>
+                    <p style="color: #888; font-size: 0.8rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">License: CC‑BY (reuse allowed)</p>
+                </div>
+
+                <!-- Toucan -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🎛️ Toucan Music</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">20+ years of underground CC electronic</p>
+                    <a href="https://www.toucanmusic.co.uk" target="_blank" style="display: block; padding: 0.8rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; margin-bottom: 1rem;">Browse Label</a>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">Genres: House, Trance, Techno, Chillout</p>
+                </div>
+
+                <!-- Drift Deeper -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🌫️ Drift Deeper</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">Open dub techno & ambient compilations</p>
+                    <a href="https://driftdeeper.bandcamp.com" target="_blank" style="display: block; padding: 0.8rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; margin-bottom: 1rem;">Visit Bandcamp</a>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">License: CC‑BY‑NC</p>
+                </div>
+
+                <!-- Pixabay -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🎵 Pixabay Music</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">Surprisingly good free electronic catalog</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="https://pixabay.com/music/search/techno/" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">Techno</a>
+                        <a href="https://pixabay.com/music/search/house/" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">House</a>
+                        <a href="https://pixabay.com/music/search/downtempo/" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; font-size: 0.85rem;">Downtempo</a>
+                    </div>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">License: Pixabay (Commercial OK)</p>
+                </div>
+
+                <!-- Uppbeat -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🎚️ Uppbeat</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">Free tier with creator license</p>
+                    <a href="https://uppbeat.io/browse/music/electronic/techno" target="_blank" style="display: block; padding: 0.8rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; margin-bottom: 1rem;">Browse Techno</a>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">Great for loops & backgrounds</p>
+                </div>
+
+                <!-- CCMixter -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🎼 CCmixter</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">OG Creative Commons remix community</p>
+                    <a href="https://ccmixter.org" target="_blank" style="display: block; padding: 0.8rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; margin-bottom: 1rem;">Explore Remixes</a>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">Stems & remix-friendly content</p>
+                </div>
+
+                <!-- Internet Archive Netlabels -->
+                <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="color: #FFB400; margin-top: 0;">🌀 Internet Archive</h3>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">Goldmine of underground netlabels</p>
+                    <a href="https://archive.org/details/netlabels" target="_blank" style="display: block; padding: 0.8rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px; text-align: center; margin-bottom: 1rem;">Browse Netlabels</a>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 140, 0, 0.1);">2000s–2010s underground scene</p>
+                </div>
+
+            </div>
+
+            <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem; margin-top: 2rem;">
+                <h3>🎧 Your Spotify Library</h3>
+                <p style="color: #888; font-size: 0.9rem; margin-bottom: 1.5rem;">Log in to access your personal playlists and recommendations.</p>
+                <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd" width="100%" height="380" frameborder="0" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: 8px; border: 1px solid rgba(255, 140, 0, 0.2);"></iframe>
+                <p style="margin-top: 1.5rem; color: #888; font-size: 0.85rem;">💡 Tip: Everything plays in this window. Click any source above to discover underground electronic, then use Spotify for your saved tracks.</p>
+            </div>
+        </div>
+        </div>
+
+        <div id="tab-video" class="tabcontent">
+            <h2>Video Courses</h2>
+            <p>Watch educational content with transcript support.</p>
+            <input type="text" id="videoUrl" placeholder="Enter YouTube video URL or ID">
+            <button onclick="loadVideo()">Load Video</button>
+            <button onclick="enableCaptions()">Enable Captions</button>
+            <div id="player"></div>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem;">For full transcripts, use <a href="https://www.youtube-transcript.com/" target="_blank">YouTube Transcript</a>.</p>
+        </div>
+
+        <div id="tab-resources" class="tabcontent">
+            <h2>Educational Resources</h2>
+            <p>Curated links to help you learn and grow across many subjects.</p>
+            
+            <div style="margin-bottom: 2rem;">
+                <h3>Learning Platforms</h3>
+                <ul>
+                    <li><a href="https://www.khanacademy.org/" target="_blank">Khan Academy</a> — Free courses on various subjects</li>
+                    <li><a href="https://www.coursera.org/" target="_blank">Coursera</a> — Online courses from universities and institutions</li>
+                    <li><a href="https://openstax.org/" target="_blank">OpenStax</a> — Free, peer-reviewed textbooks</li>
+                    <li><a href="https://www.pbslearningmedia.org/" target="_blank">PBS LearningMedia</a> — Educational videos and resources</li>
+                    <li><a href="https://www.librarysearch.com/" target="_blank">Library Search</a> — Find academic databases and journals</li>
+                </ul>
+            </div>
+
+            <div style="background: rgba(30, 40, 70, 0.3); border: 1px solid rgba(255, 140, 0, 0.2); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3>Find Sources for Your Topic</h3>
+                <p style="color: #c0c0c0; margin-bottom: 1.5rem;">Enter a topic and get suggestions for academic sources, articles, books, and relevant materials.</p>
+                
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <input type="text" id="topicInput" placeholder="Enter your topic or subject..." style="flex: 1; min-width: 250px;">
+                    <button onclick="suggestSources()" style="margin: 0;">Suggest Sources</button>
+                </div>
+
+                <div id="sourcesResult"></div>
+            </div>
+
+            <p style="margin-top: 2rem; color: #888; font-size: 0.9rem;">💡 Tip: Look for credible sources like academic journals, government sites, and established organizations. Use Google Scholar for peer-reviewed papers.</p>
+        </div>
+
+        <div id="tab-aiethics" class="tabcontent">
+            <h2>Using AI Responsibly</h2>
+            <p>AI is a powerful tool, but with that power comes responsibility. Here's how to use it ethically:</p>
+            <ul>
+                <li><strong>Use AI to enhance</strong> — Generate ideas, not complete assignments</li>
+                <li><strong>Always cite</strong> — Attribute AI-generated content in your work</li>
+                <li><strong>Verify everything</strong> — Check AI outputs against multiple reliable sources</li>
+                <li><strong>Test your work</strong> — Use AI detectors to ensure your original voice comes through</li>
+                <li><strong>Be transparent</strong> — Disclose when and how you used AI tools</li>
+                <li><strong>Think critically</strong> — Focus on learning and understanding, not just completion</li>
+                <li><strong>Know the rules</strong> — Check your institution's policies on AI use</li>
+            </ul>
+            <p style="margin-top: 2rem; color: #888; font-size: 0.9rem;">Remember: The goal of education is growth. Tools should serve your learning, not replace it.</p>
+        </div>
+    </main>
+
+    <script>
+                                                // Voice Input & Read Aloud logic
+                                                function startVoiceInput() {
+                                                    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                                                        alert('Speech recognition not supported in this browser.');
+                                                        return;
+                                                    }
+                                                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                                                    const recognition = new SpeechRecognition();
+                                                    recognition.lang = 'en-US';
+                                                    recognition.interimResults = false;
+                                                    recognition.maxAlternatives = 1;
+                                                    recognition.onresult = function(event) {
+                                                        const transcript = event.results[0][0].transcript;
+                                                        if (editor) {
+                                                            editor.setData(editor.getData() + ' ' + transcript);
+                                                        }
+                                                    };
+                                                    recognition.onerror = function(event) {
+                                                        alert('Voice input error: ' + event.error);
+                                                    };
+                                                    recognition.start();
+                                                }
+                                                function readAloud() {
+                                                    if (!('speechSynthesis' in window)) {
+                                                        alert('Text-to-speech not supported in this browser.');
+                                                        return;
+                                                    }
+                                                    const text = editor ? editor.getData() : '';
+                                                    if (!text) {
+                                                        alert('Please write something first');
+                                                        return;
+                                                    }
+                                                    const utterance = new SpeechSynthesisUtterance(text);
+                                                    utterance.lang = 'en-US';
+                                                    window.speechSynthesis.speak(utterance);
+                                                }
+                                        // Calendar & Planner logic
+                                        let tasks = [];
+                                        function addTask() {
+                                            const title = document.getElementById('taskTitle').value.trim();
+                                            const date = document.getElementById('taskDate').value;
+                                            if (!title || !date) { alert('Please enter both task and date.'); return; }
+                                            tasks.push({title, date});
+                                            document.getElementById('taskTitle').value = '';
+                                            document.getElementById('taskDate').value = '';
+                                            renderTasks();
+                                            renderCalendar();
+                                        }
+                                        function renderTasks() {
+                                            const list = document.getElementById('taskList');
+                                            list.innerHTML = '';
+                                            tasks.sort((a,b)=>a.date.localeCompare(b.date));
+                                            tasks.forEach((task, idx) => {
+                                                const taskDiv = document.createElement('div');
+                                                taskDiv.style.cssText = 'background:#b19cd9;color:#222;padding:1rem;border-radius:8px;min-width:160px;min-height:40px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:0.5rem;';
+                                                taskDiv.innerHTML = `<strong>${task.title}</strong><br><span style='color:#888;'>Due: ${task.date}</span>`;
+                                                const delBtn = document.createElement('button');
+                                                delBtn.innerText = '×';
+                                                delBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:#FFB400;color:#222;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:1rem;';
+                                                delBtn.onclick = () => { tasks.splice(idx,1); renderTasks(); renderCalendar(); };
+                                                taskDiv.appendChild(delBtn);
+                                                list.appendChild(taskDiv);
+                                            });
+                                        }
+                                        function renderCalendar() {
+                                            const grid = document.getElementById('calendarGrid');
+                                            grid.innerHTML = '';
+                                            const today = new Date();
+                                            const year = today.getFullYear();
+                                            const month = today.getMonth();
+                                            const firstDay = new Date(year, month, 1).getDay();
+                                            const daysInMonth = new Date(year, month+1, 0).getDate();
+                                            for (let i=0; i<firstDay; i++) {
+                                                const emptyCell = document.createElement('div');
+                                                emptyCell.style.cssText = 'min-height:40px;';
+                                                grid.appendChild(emptyCell);
+                                            }
+                                            for (let d=1; d<=daysInMonth; d++) {
+                                                const cell = document.createElement('div');
+                                                cell.style.cssText = 'background:#b19cd9;color:#222;padding:0.5rem;border-radius:6px;min-height:40px;box-shadow:0 2px 8px rgba(0,0,0,0.05);position:relative;';
+                                                cell.innerText = d;
+                                                const cellDate = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                                                const dayTasks = tasks.filter(t=>t.date===cellDate);
+                                                if (dayTasks.length) {
+                                                    cell.style.background = '#FFB400';
+                                                    cell.style.color = '#222';
+                                                    cell.title = dayTasks.map(t=>t.title).join(', ');
+                                                }
+                                                grid.appendChild(cell);
+                                            }
+                                        }
+                                        document.addEventListener('DOMContentLoaded', renderCalendar);
+                                // Flashcards & Quizzes logic
+                                let flashcards = [];
+                                function addFlashcard() {
+                                    const q = document.getElementById('flashcardQuestion').value.trim();
+                                    const a = document.getElementById('flashcardAnswer').value.trim();
+                                    if (!q || !a) { alert('Please enter both question and answer.'); return; }
+                                    flashcards.push({q, a});
+                                    document.getElementById('flashcardQuestion').value = '';
+                                    document.getElementById('flashcardAnswer').value = '';
+                                    renderFlashcards();
+                                }
+                                function renderFlashcards() {
+                                    const list = document.getElementById('flashcardList');
+                                    list.innerHTML = '';
+                                    flashcards.forEach((card, idx) => {
+                                        const cardDiv = document.createElement('div');
+                                        cardDiv.style.cssText = 'background:#b19cd9;color:#222;padding:1rem;border-radius:8px;min-width:160px;min-height:60px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.1);';
+                                        cardDiv.innerHTML = `<strong>Q:</strong> ${card.q}<br><strong>A:</strong> ${card.a}`;
+                                        const delBtn = document.createElement('button');
+                                        delBtn.innerText = '×';
+                                        delBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:#FFB400;color:#222;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:1rem;';
+                                        delBtn.onclick = () => { flashcards.splice(idx,1); renderFlashcards(); };
+                                        cardDiv.appendChild(delBtn);
+                                        list.appendChild(cardDiv);
+                                    });
+                                }
+                                let quizIndex = 0, quizOrder = [], quizScore = 0;
+                                function startQuiz() {
+                                    if (flashcards.length === 0) { alert('Add some flashcards first!'); return; }
+                                    quizOrder = [...Array(flashcards.length).keys()].sort(()=>Math.random()-0.5);
+                                    quizIndex = 0; quizScore = 0;
+                                    showQuizCard();
+                                }
+                                function showQuizCard() {
+                                    const area = document.getElementById('quizArea');
+                                    if (quizIndex >= quizOrder.length) {
+                                        area.innerHTML = `<div class='result-box'><strong>Quiz complete!</strong><br>Score: ${quizScore} / ${quizOrder.length}</div>`;
+                                        return;
+                                    }
+                                    const card = flashcards[quizOrder[quizIndex]];
+                                    area.innerHTML = `<div class='result-box'><strong>Q:</strong> ${card.q}<br><input type='text' id='quizAnswerInput' placeholder='Your answer...' style='width:100%;max-width:300px;margin-top:0.5rem;'><br><button onclick='submitQuizAnswer()'>Submit</button></div>`;
+                                }
+                                function submitQuizAnswer() {
+                                    const card = flashcards[quizOrder[quizIndex]];
+                                    const userAns = document.getElementById('quizAnswerInput').value.trim();
+                                    let correct = userAns.toLowerCase() === card.a.toLowerCase();
+                                    if (correct) quizScore++;
+                                    quizIndex++;
+                                    showQuizCard();
+                                }
+                        // Mind Map & Sticky Notes logic
+                        function addMindMapNode() {
+                            const nodeId = 'node-' + Date.now();
+                            const nodeDiv = document.createElement('div');
+                            nodeDiv.className = 'mindmap-node';
+                            nodeDiv.style.cssText = 'background:#b19cd9;color:#222;padding:1rem;border-radius:8px;min-width:120px;min-height:60px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.1);';
+                            nodeDiv.contentEditable = true;
+                            nodeDiv.setAttribute('aria-label','Mind map node');
+                            nodeDiv.id = nodeId;
+                            nodeDiv.innerText = 'New Idea';
+                            const delBtn = document.createElement('button');
+                            delBtn.innerText = '×';
+                            delBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:#FFB400;color:#222;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:1rem;';
+                            delBtn.onclick = () => nodeDiv.remove();
+                            nodeDiv.appendChild(delBtn);
+                            document.getElementById('mindMapNodes').appendChild(nodeDiv);
+                        }
+                        function addStickyNote() {
+                            const noteId = 'note-' + Date.now();
+                            const noteDiv = document.createElement('div');
+                            noteDiv.className = 'sticky-note';
+                            noteDiv.style.cssText = 'background:#FFB400;color:#222;padding:1rem;border-radius:8px;min-width:120px;min-height:60px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.1);';
+                            noteDiv.contentEditable = true;
+                            noteDiv.setAttribute('aria-label','Sticky note');
+                            noteDiv.id = noteId;
+                            noteDiv.innerText = 'Note';
+                            const delBtn = document.createElement('button');
+                            delBtn.innerText = '×';
+                            delBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:#b19cd9;color:#222;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:1rem;';
+                            delBtn.onclick = () => noteDiv.remove();
+                            noteDiv.appendChild(delBtn);
+                            document.getElementById('stickyNotes').appendChild(noteDiv);
+                        }
+                // Citation Generator logic
+                function toggleCitationGenerator() {
+                    const gen = document.getElementById('citationGenerator');
+                    gen.style.display = gen.style.display === 'none' ? 'block' : 'none';
+                    renderCiteFields();
+                }
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (document.getElementById('citeType')) {
+                        document.getElementById('citeType').addEventListener('change', renderCiteFields);
+                    }
+                });
+                function renderCiteFields() {
+                    const type = document.getElementById('citeType').value;
+                    let html = '';
+                    if (type === 'book') {
+                        html = `<label>Author: <input type="text" id="citeAuthor" placeholder="Last, First"></label><br>
+                                <label>Title: <input type="text" id="citeTitle" placeholder="Book Title"></label><br>
+                                <label>Year: <input type="text" id="citeYear" placeholder="2024"></label><br>
+                                <label>Publisher: <input type="text" id="citePublisher" placeholder="Publisher"></label><br>`;
+                    } else if (type === 'article') {
+                        html = `<label>Author: <input type="text" id="citeAuthor" placeholder="Last, First"></label><br>
+                                <label>Title: <input type="text" id="citeTitle" placeholder="Article Title"></label><br>
+                                <label>Journal: <input type="text" id="citeJournal" placeholder="Journal Name"></label><br>
+                                <label>Year: <input type="text" id="citeYear" placeholder="2024"></label><br>
+                                <label>Volume: <input type="text" id="citeVolume" placeholder="12"></label><br>
+                                <label>Pages: <input type="text" id="citePages" placeholder="123-145"></label><br>`;
+                    } else {
+                        html = `<label>Author: <input type="text" id="citeAuthor" placeholder="Last, First"></label><br>
+                                <label>Title: <input type="text" id="citeTitle" placeholder="Webpage Title"></label><br>
+                                <label>Website: <input type="text" id="citeWebsite" placeholder="Website Name"></label><br>
+                                <label>Year: <input type="text" id="citeYear" placeholder="2024"></label><br>
+                                <label>URL: <input type="text" id="citeURL" placeholder="https://..."></label><br>`;
+                    }
+                    document.getElementById('citeFields').innerHTML = html;
+                }
+                function generateCitation() {
+                    const type = document.getElementById('citeType').value;
+                    const style = document.getElementById('citeStyle').value;
+                    const author = document.getElementById('citeAuthor').value;
+                    const title = document.getElementById('citeTitle').value;
+                    const year = document.getElementById('citeYear').value;
+                    let citation = '';
+                    if (type === 'book') {
+                        const publisher = document.getElementById('citePublisher').value;
+                        if (style === 'apa') {
+                            citation = `${author} (${year}). <i>${title}</i>. ${publisher}.`;
+                        } else if (style === 'mla') {
+                            citation = `${author}. <i>${title}</i>. ${publisher}, ${year}.`;
+                        } else {
+                            citation = `${author}. <i>${title}</i>. (${publisher}, ${year}).`;
+                        }
+                    } else if (type === 'article') {
+                        const journal = document.getElementById('citeJournal').value;
+                        const volume = document.getElementById('citeVolume').value;
+                        const pages = document.getElementById('citePages').value;
+                        if (style === 'apa') {
+                            citation = `${author} (${year}). ${title}. <i>${journal}</i>, ${volume}, ${pages}.`;
+                        } else if (style === 'mla') {
+                            citation = `${author}. "${title}." <i>${journal}</i>, vol. ${volume}, ${year}, pp. ${pages}.`;
+                        } else {
+                            citation = `${author}. "${title}," <i>${journal}</i> ${volume} (${year}): ${pages}.`;
+                        }
+                    } else {
+                        const website = document.getElementById('citeWebsite').value;
+                        const url = document.getElementById('citeURL').value;
+                        if (style === 'apa') {
+                            citation = `${author} (${year}). <i>${title}</i>. ${website}. ${url}`;
+                        } else if (style === 'mla') {
+                            citation = `${author}. "${title}." <i>${website}</i>, ${year}, ${url}.`;
+                        } else {
+                            citation = `${author}. "${title}." <i>${website}</i>. (${year}). ${url}`;
+                        }
+                    }
+                    document.getElementById('citationResult').innerHTML = `<div class='result-box'><strong>Citation:</strong><br>${citation}</div>`;
+                }
+        // Dropdown menu toggle
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdownContent');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                const dropdowns = document.querySelectorAll('.dropdown-content');
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        }
+
+        // Tab switching with proper tab button state management
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tabcontent');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        function showTabFromDropdown(tabName) {
+            showTab(tabName);
+            
+            // Close dropdown after selection
+            const dropdown = document.getElementById('dropdownContent');
+            dropdown.classList.remove('show');
+
+            // Update button text to show current selection
+            const btnText = {
+                'editor': 'Text Editor',
+                'calculator': 'Calculator',
+                'search': 'Search',
+                'thesaurus': 'Thesaurus',
+                'factcheck': 'Fact Check',
+                'aichat': 'Ask AI',
+                'music': 'Music',
+                'video': 'Videos',
+                'resources': 'Resources',
+                'aiethics': 'AI Ethics'
+            };
+            
+            // Update dropdown button to show current tab (optional visual feedback)
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+            dropdownBtn.style.animation = 'none';
+            setTimeout(() => {
+                dropdownBtn.style.animation = '';
+            }, 10);
+        }
+
+        // Initialize CKEditor
+        let editor;
+        ClassicEditor
+            .create(document.querySelector('#editor-content'), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'bulletedList', 'numberedList', '|', 'link', 'blockQuote', '|', 'undo', 'redo']
+            })
+            .then(newEditor => {
+                editor = newEditor;
+                console.log('Editor initialized');
+            })
+            .catch(error => {
+                console.error('Editor error:', error);
+            });
+
+        // Calculator functions
+        let display = document.getElementById('display');
+        function appendToDisplay(value) {
+            if (display.innerText === '0') {
+                display.innerText = value;
+            } else {
+                display.innerText += value;
+            }
+        }
+        function clearDisplay() {
+            display.innerText = '0';
+        }
+        function calculate() {
+            try {
+                display.innerText = eval(display.innerText);
+            } catch {
+                display.innerText = 'Error';
+            }
+        }
+
+        // Thesaurus
+        async function getSynonyms() {
+            const word = document.getElementById('wordInput').value;
+            if (!word) {
+                alert('Please enter a word');
+                return;
+            }
+            try {
+                const response = await fetch(`https://api.datamuse.com/words?rel_syn=${word}`);
+                const data = await response.json();
+                const result = document.getElementById('thesaurusResult');
+                if (data.length === 0) {
+                    result.innerHTML = '<div class="result-box"><p>No synonyms found for that word.</p></div>';
+                } else {
+                    result.innerHTML = '<div class="result-box"><h3>Synonyms for "' + word + '":</h3><ul>' + data.slice(0, 10).map(item => `<li>${item.word}</li>`).join('') + '</ul></div>';
+                }
+            } catch (error) {
+                document.getElementById('thesaurusResult').innerHTML = '<div class="result-box"><p>Error: ' + error.message + '</p></div>';
+            }
+        }
+
+        // Fact Check
+        function factCheck() {
+            const statement = document.getElementById('factInput').value;
+            if (!statement) {
+                alert('Please enter a statement');
+                return;
+            }
+            const result = document.getElementById('factCheckResult');
+            result.innerHTML = `
+                <div class="result-box">
+                    <h3>Fact-Check Resources</h3>
+                    <p>To verify this statement, visit:</p>
+                    <ul>
+                        <li><a href="https://www.factcheck.org/" target="_blank">FactCheck.org</a></li>
+                        <li><a href="https://www.snopes.com/" target="_blank">Snopes</a></li>
+                        <li><a href="https://www.politifact.com/" target="_blank">PolitiFact</a></li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #aaa; font-size: 0.9rem;">Always cross-reference multiple sources for the most accurate information.</p>
+                </div>
+            `;
+        }
+
+        // Grammar check
+        async function checkGrammar() {
+            if (!editor) {
+                alert('Editor is loading. Please try again.');
+                return;
+            }
+            const text = editor.getData();
+            if (!text) {
+                alert('Please write something first');
+                return;
+            }
+            try {
+                const response = await fetch('https://api.languagetool.org/v2/check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        text: text,
+                        language: 'en-US'
+                    })
+                });
+                const data = await response.json();
+                if (data.matches && data.matches.length > 0) {
+                    let correctedText = text;
+                    data.matches.reverse().forEach(match => {
+                        const replacement = match.replacements[0]?.value || '';
+                        correctedText = correctedText.substring(0, match.offset) + replacement + correctedText.substring(match.offset + match.length);
+                    });
+                    editor.setData(correctedText);
+                    alert(data.matches.length + ' corrections applied.');
+                } else {
+                    alert('No grammar issues found. Nice work!');
+                }
+            } catch (error) {
+                alert('Grammar check failed: ' + error.message);
+            }
+        }
+
+        // Format guide
+        function formatText() {
+            const format = document.getElementById('format').value;
+            const guide = document.getElementById('formatGuide');
+            if (format === 'apa') {
+                guide.innerHTML = `
+                    <div class="result-box">
+                        <h3>APA Format Guide</h3>
+                        <p><strong>In-text citation:</strong> (Author, Year)</p>
+                        <p><strong>Reference:</strong> Author. (Year). Title. Publisher.</p>
+                        <p style="color: #888; margin-top: 1rem;">Example: (Smith, 2023)</p>
+                    </div>
+                `;
+            } else if (format === 'mla') {
+                guide.innerHTML = `
+                    <div class="result-box">
+                        <h3>MLA Format Guide</h3>
+                        <p><strong>In-text citation:</strong> (Author Page)</p>
+                        <p><strong>Works Cited:</strong> Author. Title. Publisher, Year.</p>
+                        <p style="color: #888; margin-top: 1rem;">Example: (Smith 45)</p>
+                    </div>
+                `;
+            } else if (format === 'chicago') {
+                guide.innerHTML = `
+                    <div class="result-box">
+                        <h3>Chicago Format Guide</h3>
+                        <p><strong>Notes and Bibliography:</strong> Superscript numbers in text, full citations in footnotes.</p>
+                        <p style="color: #888; margin-top: 1rem;">Example: 1. John Smith, Book Title (Publisher, 2023), 45.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Check for AI content
+        function checkAI() {
+            if (!editor) {
+                alert('Editor is loading.');
+                return;
+            }
+            const text = editor.getData();
+            if (!text) {
+                alert('Please write something first');
+                return;
+            }
+            const result = document.getElementById('aiCheckerResult');
+            result.innerHTML = `
+                <div class="result-box">
+                    <h3>Content Analysis</h3>
+                    <p><strong>Word count:</strong> ${text.split(/\s+/).length}</p>
+                    <p>For detailed AI detection, use specialized tools:</p>
+                    <ul>
+                        <li><a href="https://www.originality.ai/" target="_blank">Originality.ai</a></li>
+                        <li><a href="https://www.turnitin.com/" target="_blank">Turnitin</a></li>
+                        <li><a href="https://gptzero.me/" target="_blank">GPTZero</a></li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #aaa; font-size: 0.9rem;">Always cite your sources and keep your voice authentic.</p>
+                </div>
+            `;
+        }
+
+        // Generate text
+        async function generateText() {
+            if (!editor) {
+                alert('Editor is loading.');
+                return;
+            }
+            const prompt = editor.getData();
+            if (!prompt) {
+                alert('Please enter a prompt first');
+                return;
+            }
+            try {
+                alert('Generating... This may take a moment.');
+                const response = await fetch('https://api-inference.huggingface.co/models/distilgpt2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        inputs: prompt,
+                        parameters: {
+                            max_length: 100,
+                            temperature: 0.7
+                        }
+                    })
+                });
+                const data = await response.json();
+                if (data && data[0] && data[0].generated_text) {
+                    editor.setData(prompt + ' ' + data[0].generated_text);
+                    alert('Text generated. Review and edit as needed.');
+                } else {
+                    alert('Generation failed. Try again.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Service worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.log('SW failed:', err));
+            });
+        }
+
+        // YouTube player
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: 'dQw4w9WgXcQ',
+                events: {
+                    'onReady': onPlayerReady,
+                }
+            });
+        }
+        function onPlayerReady(event) {
+            console.log('Player ready');
+        }
+        function loadVideo() {
+            const url = document.getElementById('videoUrl').value;
+            if (!url) {
+                alert('Please enter a video URL or ID');
+                return;
+            }
+            const videoId = url.split('v=')[1] || url.split('/').pop();
+            if (player && videoId) {
+                player.loadVideoById(videoId);
+            } else if (!player) {
+                alert('Player not loaded yet');
+            }
+        }
+        function enableCaptions() {
+            if (player) {
+                player.setOption('captions', 'track', {'languageCode': 'en'});
+                player.setOption('captions', 'reload', true);
+                alert('Captions enabled');
+            } else {
+                alert('Load a video first');
+            }
+        }
+
+        // Playlist switching
+        function switchPlaylist(playlistType) {
+            // Hide all playlists
+            const playlists = document.querySelectorAll('.playlist-content');
+            playlists.forEach(p => {
+                p.classList.remove('active');
+            });
+
+            // Deactivate all buttons
+            const buttons = document.querySelectorAll('.playlist-btn');
+            buttons.forEach(b => {
+                b.classList.remove('active');
+            });
+
+            // Show selected playlist
+            document.getElementById(playlistType + '-playlist').classList.add('active');
+
+            // Activate clicked button
+            document.getElementById('btn-' + playlistType).classList.add('active');
+        }
+
+        // AI Chat functionality
+        let chatHistory = [];
+        
+        function addChatMessage(message, isUser) {
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // Remove placeholder if exists
+            const placeholder = messagesContainer.querySelector('[style*="text-align: center"]');
+            if (placeholder) placeholder.remove();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                padding: 1rem;
+                border-radius: 8px;
+                max-width: 85%;
+                word-wrap: break-word;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            if (isUser) {
+                messageDiv.style.cssText += `
+                    background: rgba(138, 43, 226, 0.3);
+                    color: #d8bfd8;
+                    align-self: flex-end;
+                    border: 1px solid rgba(255, 140, 0, 0.2);
+                `;
+            } else {
+                messageDiv.style.cssText += `
+                    background: rgba(30, 40, 70, 0.5);
+                    color: #c0c0c0;
+                    align-self: flex-start;
+                    border-left: 3px solid #FFB400;
+                `;
+            }
+            
+            messageDiv.textContent = message;
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            const container = document.getElementById('chatContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function askAI() {
+            const question = document.getElementById('aiQuestion').value;
+            if (!question.trim()) {
+                alert('Please ask a question');
+                return;
+            }
+            
+            addChatMessage(question, true);
+            document.getElementById('aiQuestion').value = '';
+            chatHistory.push({ role: 'user', content: question });
+            
+            try {
+                // Using the Anthropic API through Claude
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': 'YOUR_API_KEY_HERE'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-opus-4-5-20251101',
+                        max_tokens: 500,
+                        messages: chatHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    // Fallback to local knowledge-based response
+                    const aiResponse = generateLocalResponse(question);
+                    addChatMessage(aiResponse, false);
+                    chatHistory.push({ role: 'assistant', content: aiResponse });
+                    return;
+                }
+
+                const data = await response.json();
+                const aiMessage = data.content[0].text;
+                addChatMessage(aiMessage, false);
+                chatHistory.push({ role: 'assistant', content: aiMessage });
+            } catch (error) {
+                // Fallback to local response generation
+                const aiResponse = generateLocalResponse(question);
+                addChatMessage(aiResponse, false);
+                chatHistory.push({ role: 'assistant', content: aiResponse });
+            }
+        }
+
+        function generateLocalResponse(question) {
+            const q = question.toLowerCase();
+            
+            // Simple knowledge base for common questions
+            const responses = {
+                'how do i': 'That\'s a great question! Here are some steps to consider: 1) Break the task into smaller steps, 2) Research or look for examples, 3) Practice and refine, 4) Ask for feedback. What specifically would you like help with?',
+                'what is': 'Great question! I can help you understand that concept. Could you provide more context about what you\'d like to know? That way I can give you a more precise explanation.',
+                'explain': 'I\'d be happy to explain! The key points to understand are: definitions, how it relates to other concepts, real-world applications, and why it matters. What aspect would you like me to focus on?',
+                'how can i study': 'Here are some effective study strategies: 1) Active recall - test yourself, 2) Spaced repetition - review over time, 3) Teach it to someone else, 4) Make connections to what you know, 5) Practice problems. What subject are you studying?',
+                'what are the best': 'The best resources depend on your learning style. Some popular options: books for depth, videos for visualization, interactive sites for practice, study groups for discussion. What\'s your preferred learning method?',
+                'help me write': 'I can help with your writing! Consider: 1) Clear thesis or main idea, 2) Well-organized structure, 3) Supporting evidence, 4) Smooth transitions, 5) Proofreading. What would you like to write about?',
+                'how do i remember': 'Memory techniques include: mnemonics, visualization, grouping information, teaching others, spaced repetition, and connecting to existing knowledge. What are you trying to remember?',
+                'default': 'That\'s an interesting question! To give you the best answer, consider: What\'s the context? What have you already tried? What\'s your learning goal? Feel free to ask follow-up questions or rephrase - I\'m here to help you think through it.'
+            };
+            
+            for (let [key, value] of Object.entries(responses)) {
+                if (key !== 'default' && q.includes(key)) {
+                    return value;
+                }
+            }
+            
+            return responses.default;
+        }
+
+        // Source Suggestion functionality
+        async function suggestSources() {
+            const topic = document.getElementById('topicInput').value;
+            if (!topic.trim()) {
+                alert('Please enter a topic');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('sourcesResult');
+            resultDiv.innerHTML = '<p style="color: #888;">Finding sources for "' + topic + '"...</p>';
+            
+            try {
+                const sources = generateSourceSuggestions(topic);
+                resultDiv.innerHTML = sources;
+            } catch (error) {
+                resultDiv.innerHTML = '<p style="color: #d8bfd8;">Error generating sources. Please try again.</p>';
+            }
+        }
+
+        function generateSourceSuggestions(topic) {
+            const safeSearchTopic = encodeURIComponent(topic);
+            
+            const html = `
+                <div class="result-box">
+                    <h3>Academic Sources for: "${topic}"</h3>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <p style="color: #b19cd9; margin-bottom: 1rem;"><strong>📚 Peer-Reviewed Articles & Journals:</strong></p>
+                        <ul style="list-style: none; margin-left: 0;">
+                            <li style="margin-bottom: 0.8rem;">
+                                <a href="https://scholar.google.com/scholar?q=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">Google Scholar - ${topic}</a>
+                            </li>
+                            <li style="margin-bottom: 0.8rem;">
+                                <a href="https://pubmed.ncbi.nlm.nih.gov/?term=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">PubMed (Medical/Biology)</a>
+                            </li>
+                            <li style="margin-bottom: 1.5rem;">
+                                <a href="https://www.jstor.org/action/doBasicSearch?Query=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">JSTOR Database</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 1.5rem;">
+                        <p style="color: #b19cd9; margin-bottom: 1rem;"><strong>📖 Books & Textbooks:</strong></p>
+                        <ul style="list-style: none; margin-left: 0;">
+                            <li style="margin-bottom: 0.8rem;">
+                                <a href="https://www.worldcat.org/search?q=${safeSearchTopic}&start=1&dbtype=b" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">WorldCat Library Search</a>
+                            </li>
+                            <li style="margin-bottom: 0.8rem;">
+                                <a href="https://openstax.org/search?q=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">OpenStax Free Textbooks</a>
+                            </li>
+                            <li style="margin-bottom: 1.5rem;">
+                                <a href="https://www.gutenberg.org/ebooks/search/?query=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">Project Gutenberg (Free Books)</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 1.5rem;">
+                        <p style="color: #b19cd9; margin-bottom: 1rem;"><strong>🔍 General Search:</strong></p>
+                        <ul style="list-style: none; margin-left: 0;">
+                            <li style="margin-bottom: 0.8rem;">
+                                <a href="https://www.wikipedia.org/w/index.php?search=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">Wikipedia - For overview & references</a>
+                            </li>
+                            <li style="margin-bottom: 0.8rem;">
+                                <a href="https://www.archive.org/search.php?query=${safeSearchTopic}" target="_blank" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.2); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 4px;">Internet Archive (Historical Sources)</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(255, 140, 0, 0.1); border-left: 3px solid #FFB400; padding: 1rem; border-radius: 4px; margin-top: 1.5rem;">
+                        <p style="color: #d8bfd8; margin: 0;"><strong>💡 Research Tips:</strong></p>
+                        <ul style="list-style: none; margin-left: 0; margin-top: 0.8rem; color: #c0c0c0;">
+                            <li>• Start with Google Scholar for peer-reviewed articles</li>
+                            <li>• Check your library's database access</li>
+                            <li>• Read Wikipedia references for authoritative sources</li>
+                            <li>• Look for recent publications (last 5-10 years)</li>
+                            <li>• Evaluate source credibility: author expertise, publication venue, citations</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+    </script>
+</body>
+</html>
