@@ -1,0 +1,58 @@
+<!-- Quick console test -->
+<script>
+  console.clear();
+  console.log('%c🚀 Student Helper Starting', 'color: #7c3aed; font-size: 14px; font-weight: bold');
+  
+  // Test 1: Check when DOM is loaded
+  if (document.readyState === 'loading') {
+    console.log('⏳ Document is still loading');
+  } else {
+    console.log('✅ Document already loaded');
+  }
+  
+  // Test 2: Check utilities
+  setTimeout(() => {
+    console.log('\n%c--- Checking Utilities ---', 'color: #06b6d4');
+    console.log(`StorageManager: ${typeof StorageManager}`);
+    console.log(`Validators: ${typeof Validators}`);
+    console.log(`ErrorHandler: ${typeof ErrorHandler}`);
+    console.log(`storage instance: ${typeof storage}`);
+  }, 100);
+  
+  // Test 3: Check modules
+  setTimeout(() => {
+    console.log('\n%c--- Checking Modules ---', 'color: #06b6d4');
+    console.log(`EditorModule: ${typeof EditorModule}`);
+    console.log(`GrammarModule: ${typeof GrammarModule}`);
+    console.log(`FlashcardsModule: ${typeof FlashcardsModule}`);
+    console.log(`ClassesModule: ${typeof ClassesModule}`);
+  }, 150);
+  
+  // Test 4: Check instances
+  setTimeout(() => {
+    console.log('\n%c--- Checking Module Instances ---', 'color: #06b6d4');
+    console.log(`editorModule: ${typeof window.editorModule}`);
+    console.log(`flashcardsModule: ${typeof window.flashcardsModule}`);
+    console.log(`classesModule: ${typeof window.classesModule}`);
+    if (window.editorModule) {
+      console.log(`editorModule.editor: ${window.editorModule.editor ? '✅ initialized' : '❌ not initialized'}`);
+    }
+  }, 200);
+  
+  // Test 5: Check app
+  setTimeout(() => {
+    console.log('\n%c--- Checking App ---', 'color: #06b6d4');
+    console.log(`StudentHelper: ${typeof StudentHelper}`);
+    console.log(`CKEditor available: ${typeof window.ClassicEditor !== 'undefined'}`);
+  }, 250);
+  
+  // Test 6: Check UI elements
+  setTimeout(() => {
+    console.log('\n%c--- Checking DOM Elements ---', 'color: #06b6d4');
+    console.log(`#editor-content: ${document.querySelector('#editor-content') ? '✅' : '❌'}`);
+    console.log(`.nav-link buttons: ${document.querySelectorAll('.nav-link').length}`);
+    console.log(`.section divs: ${document.querySelectorAll('.section').length}`);
+  }, 300);
+  
+  console.log('\n💡 Open browser console to see all messages. Try clicking "Notes" button.');
+</script>

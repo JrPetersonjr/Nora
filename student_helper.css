@@ -1,0 +1,123 @@
+/* student_helper.css - Styles for Student Helper App */
+
+/* Flashcard Popup */
+#flashcard-popup {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  z-index: 1000;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+#flashcard-selected-text,
+#flashcard-question {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+/* YouTube Popout Button */
+#yt-popout {
+  margin-top: 1em;
+}
+
+/* Focus Timer Display */
+#focus-timer-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* Citation Generator */
+#citeInput {
+  width: 70%;
+}
+#citeStyle {
+  margin-left: 1em;
+}
+#citationResult {
+  margin-top: 1em;
+}
+
+/* Music Player */
+#music-playlist {
+  margin-bottom: 0.5em;
+}
+#music-audio {
+  width: 100%;
+  margin-bottom: 0.5em;
+}
+.music-controls {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 0.5em;
+}
+#music-visualizer {
+  display: flex;
+  gap: 4px;
+  height: 40px;
+  align-items: flex-end;
+}
+#music-status {
+  margin-top: 0.5em;
+  color: #059669;
+}
+
+/* Advanced Timer */
+#adv-focus-min,
+#adv-break-min,
+#adv-cycles {
+  width: 60px;
+}
+.adv-label {
+  margin-left: 1em;
+}
+#adv-timer-display {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 1em 0;
+}
+
+/* Calculator */
+#calcInput {
+  width: 60%;
+}
+#calcResult {
+  margin-left: 1em;
+}
+
+/* Plagiarism Checker */
+#plagText {
+  width: 90%;
+}
+#plagiarismResult {
+  margin-top: 1em;
+}
+
+/* Delegation Model */
+#delegationTask {
+  width: 40%;
+}
+#delegationPerson {
+  width: 20%;
+}
+.delegation-label {
+  margin-left: 1em;
+}
+#delegationResult {
+  margin-top: 1em;
+}
+
+/* Settings */
+#userName {
+  margin-bottom: 0.7em;
+}
+#themeStatus {
+  margin-left: 1em;
+  color: #059669;
+}
+ul.settings-list {
+  margin-top: 0.5em;
+}

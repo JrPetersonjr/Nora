@@ -1,0 +1,95 @@
+<!-- Debug page to test app initialization -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Helper - Debug</title>
+  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
+</head>
+<body style="padding: 20px; font-family: monospace; background: #f5f5f5;">
+  <h1>Student Helper - Debug Console</h1>
+  <div id="log" style="background: #fff; padding: 20px; border-radius: 8px; max-height: 600px; overflow-y: auto; border: 1px solid #ccc;"></div>
+  
+  <script>
+    // Override console.log to show in page
+    const logDiv = document.getElementById('log');
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    function log(msg) {
+      logDiv.innerHTML += `<div style="color: #333;">${msg}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+      originalLog(msg);
+    }
+    
+    function error(msg) {
+      logDiv.innerHTML += `<div style="color: red; font-weight: bold;">ERROR: ${msg}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+      originalError(msg);
+    }
+    
+    console.log = log;
+    console.error = error;
+    
+    // Test script loading
+    log('[1] Page loaded, starting debug...');
+    
+    // Check for CKEditor
+    log(`[2] ClassicEditor available: ${typeof window.ClassicEditor !== 'undefined'}`);
+    
+    // Load utilities
+    log('[3] Loading utility modules...');
+    
+    // Create a simple test
+    window.onload = async () => {
+      log('[4] DOM fully loaded');
+      
+      // Check utilities loaded
+      log(`    - StorageManager: ${typeof StorageManager !== 'undefined'}`);
+      log(`    - Validators: ${typeof Validators !== 'undefined'}`);
+      log(`    - ErrorHandler: ${typeof ErrorHandler !== 'undefined'}`);
+      
+      // Check modules loaded
+      log('[5] Checking feature modules...');
+      log(`    - EditorModule: ${typeof EditorModule !== 'undefined'}`);
+      log(`    - GrammarModule: ${typeof GrammarModule !== 'undefined'}`);
+      log(`    - FlashcardsModule: ${typeof FlashcardsModule !== 'undefined'}`);
+      log(`    - ClassesModule: ${typeof ClassesModule !== 'undefined'}`);
+      
+      // Check app loaded
+      log(`[6] StudentHelper: ${typeof StudentHelper !== 'undefined'}`);
+      
+      // Test creating storage
+      try {
+        const storage = new StorageManager();
+        log('[7] Storage created successfully');
+        storage.set('test', { msg: 'hello' });
+        const testVal = storage.get('test');
+        log(`[8] Storage test: ${JSON.stringify(testVal)}`);
+      } catch (e) {
+        error(`Storage creation failed: ${e.message}`);
+      }
+      
+      // Test creating editor module
+      try {
+        log('[9] Creating EditorModule...');
+        const editor = new EditorModule();
+        log('[10] EditorModule created');
+      } catch (e) {
+        error(`EditorModule creation failed: ${e.message}`);
+      }
+      
+      log('[DEBUG COMPLETE]');
+    };
+  </script>
+  
+  <script src="js/utils/storage.js"></script>
+  <script src="js/utils/validators.js"></script>
+  <script src="js/utils/errorHandler.js"></script>
+  <script src="js/modules/editor.js"></script>
+  <script src="js/modules/grammar.js"></script>
+  <script src="js/modules/flashcards.js"></script>
+  <script src="js/modules/classes.js"></script>
+</body>
+</html>

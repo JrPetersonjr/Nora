@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcane Student Helper - Retro UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Helper Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Inter', Arial, sans-serif;
+        background: #f8f9fb;
+        color: #222;
+      }
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 260px;
+        background: #fff;
+        box-shadow: 2px 0 16px 0 rgba(80,80,120,0.06);
+        display: flex;
+        flex-direction: column;
+        padding: 2rem 0 1rem 0;
+        border-right: 1px solid #ececec;
+      }
+      .sidebar .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #7c3aed;
+        margin-bottom: 2.5rem;
+        text-align: center;
+        letter-spacing: 1px;
+      }
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.9rem 2rem 0.9rem 2.5rem;
+        font-size: 1.08rem;
+        color: #555;
+        text-decoration: none;
+        border-radius: 12px 0 0 12px;
+        transition: background 0.18s, color 0.18s;
+        cursor: pointer;
+      }
+      .nav-link.active, .nav-link:hover {
+        background: linear-gradient(90deg, #ede9fe 60%, #f3f0ff 100%);
+        color: #7c3aed;
+        font-weight: 600;
+      }
+      .nav-link .icon {
+        font-size: 1.2em;
+      }
+      .main {
+        flex: 1;
+        padding: 2.5rem 3.5rem 2.5rem 3.5rem;
+        background: #f8f9fb;
+        min-height: 100vh;
+      }
+      .dashboard-header {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #222;
+      }
+      .dashboard-sub {
+        color: #6b7280;
+        font-size: 1.1rem;
+        margin-bottom: 2.5rem;
+      }
+      .dashboard-cards {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+      }
+      .dashboard-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px rgba(80,80,120,0.06);
+        padding: 2rem 2.5rem;
+        min-width: 180px;
+        flex: 1 1 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .dashboard-card .icon {
+        font-size: 2.2rem;
+        margin-bottom: 0.7rem;
+        color: #7c3aed;
+      }
+      .dashboard-card .value {
+        font-size: 2.1rem;
+        font-weight: 700;
+        color: #222;
+      }
+      .dashboard-card .label {
+        color: #6b7280;
+        font-size: 1.05rem;
+        margin-top: 0.2rem;
+      }
+      .quick-actions {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 2.5rem;
+      }
+      .quick-action {
+        background: linear-gradient(90deg, #ede9fe 60%, #f3f0ff 100%);
+        border-radius: 14px;
+        padding: 1.2rem 2rem;
+        color: #7c3aed;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 12px rgba(124,58,237,0.06);
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s;
+        border: none;
+      }
+      .quick-action:hover {
+        background: #7c3aed;
+        color: #fff;
+      }
+      .recent-notes {
+        margin-top: 2.5rem;
+      }
+      .recent-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 1rem;
+      }
+      .recent-list {
+        display: flex;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+      }
+      .recent-note {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(80,80,120,0.06);
+        padding: 1.1rem 1.5rem;
+        min-width: 160px;
+        color: #222;
+        font-size: 1.05rem;
+      }
+      @media (max-width: 900px) {
+        .main { padding: 1.2rem; }
+        .dashboard-cards, .quick-actions, .recent-list { flex-direction: column; gap: 1rem; }
+        .sidebar { width: 100px; padding: 1rem 0; }
+        .sidebar .logo { font-size: 1.1rem; }
+        .nav-link { font-size: 0.95rem; padding: 0.7rem 1rem 0.7rem 1.2rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="sidebar">
+        <div class="logo">Nora<br><span style="font-size:0.95rem;font-weight:400;color:#888;">Student Helper</span></div>
+        <div class="nav">
+          <a class="nav-link active" id="nav-dashboard"><span class="icon">📋</span>Dashboard</a>
+          <a class="nav-link" id="nav-notes"><span class="icon">📝</span>Notes</a>
+          <a class="nav-link" id="nav-writing"><span class="icon">🪶</span>Writing Tools</a>
+          <a class="nav-link" id="nav-flashcards"><span class="icon">📖</span>Flashcards</a>
+          <a class="nav-link" id="nav-videos"><span class="icon">▶️</span>Study Videos</a>
+          <a class="nav-link" id="nav-timer"><span class="icon">⏲️</span>Focus Timer</a>
+          <!-- Legacy/extra features can be added here -->
+          <a class="nav-link" id="nav-plagiarism"><span class="icon">🛡️</span>Plagiarism Checker</a>
+          <a class="nav-link" id="nav-citation"><span class="icon">🔖</span>Citation Generator</a>
+          <a class="nav-link" id="nav-calculator"><span class="icon">🧮</span>Calculator</a>
+          <a class="nav-link" id="nav-music"><span class="icon">🎵</span>Music</a>
+          <a class="nav-link" id="nav-delegation"><span class="icon">🤖</span>Delegation Model</a>
+        </div>
+      </nav>
+      <main class="main" id="main-content">
+        <div class="dashboard-header">Welcome back! <span style="font-size:1.5rem;">👋</span></div>
+        <div class="dashboard-sub">Ready to learn something new today?</div>
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="icon">📝</div>
+            <div class="value">3</div>
+            <div class="label">Notes</div>
+          </div>
+          <div class="dashboard-card">
+            <div class="icon">📖</div>
+            <div class="value">4</div>
+            <div class="label">Flashcards</div>
+          </div>
+          <div class="dashboard-card">
+            <div class="icon">⭐</div>
+            <div class="value">1</div>
+            <div class="label">Favorites</div>
+          </div>
+          <div class="dashboard-card">
+            <div class="icon">📈</div>
+            <div class="value">50%</div>
+            <div class="label">Progress</div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="quick-action">Create Note</button>
+          <button class="quick-action">Study Flashcards</button>
+          <button class="quick-action">Writing Tools</button>
+          <button class="quick-action">Study Videos</button>
+          <button class="quick-action">Focus Timer</button>
+        </div>
+        <div class="recent-notes">
+          <div class="recent-title">Recent Notes</div>
+          <div class="recent-list">
+            <div class="recent-note">Introduction to Psychology</div>
+            <div class="recent-note">Calculus Derivatives</div>
+            <div class="recent-note">Essay Draft: Climate Change</div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      // Sidebar navigation logic (only Dashboard active for now)
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+          // Only Dashboard is implemented for now
+          const main = document.getElementById('main-content');
+          if (this.id === 'nav-dashboard') {
+            location.reload();
+          } else if (this.id === 'nav-notes') {
+            main.innerHTML = `
+              <div class="dashboard-header">Notes</div>
+              <div class="dashboard-sub">Organize your thoughts and ideas</div>
+              <div style="display:flex;gap:1rem;align-items:center;margin-bottom:2rem;flex-wrap:wrap;">
+                <input type="text" placeholder="Search notes..." style="flex:1;min-width:220px;padding:0.8rem 1.2rem;border-radius:8px;border:1px solid #ececec;font-size:1.05rem;">
+                <button style="background:#7c3aed;color:#fff;padding:0.8rem 1.5rem;border:none;border-radius:8px;font-weight:600;font-size:1.05rem;box-shadow:0 2px 8px #ede9fe;cursor:pointer;">+ New Note</button>
+                <select style="padding:0.8rem 1.2rem;border-radius:8px;border:1px solid #ececec;font-size:1.05rem;">
+                  <option>All Categories</option>
+                  <option>Class Notes</option>
+                  <option>Study Guide</option>
+                  <option>Essay</option>
+                </select>
+              </div>
+              <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px #ede9fe;padding:1.5rem 2rem;min-width:260px;flex:1 1 260px;max-width:340px;">
+                  <div style="font-weight:700;font-size:1.13rem;margin-bottom:0.5rem;">Introduction to Psychology <span style="color:#fbbf24;font-size:1.1em;">★</span></div>
+                  <div style="color:#555;font-size:1.01rem;margin-bottom:0.7rem;">Psychology is the scientific study of mind and behavior. Key areas include: Cognitive psychology, Developmental psychology, Social...</div>
+                  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.7rem;">
+                    <span style="background:#ede9fe;color:#7c3aed;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">Class Notes</span>
+                    <span style="background:#f3f4f6;color:#555;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">psychology</span>
+                    <span style="background:#f3f4f6;color:#555;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">intro</span>
+                  </div>
+                  <div style="display:flex;gap:1.2rem;align-items:center;">
+                    <span style="color:#7c3aed;cursor:pointer;font-size:1.1em;">✏️ Edit</span>
+                    <span style="color:#bbb;cursor:pointer;font-size:1.1em;">🗑️</span>
+                  </div>
+                </div>
+                <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px #ede9fe;padding:1.5rem 2rem;min-width:260px;flex:1 1 260px;max-width:340px;">
+                  <div style="font-weight:700;font-size:1.13rem;margin-bottom:0.5rem;">Calculus Derivatives</div>
+                  <div style="color:#555;font-size:1.01rem;margin-bottom:0.7rem;">Basic derivative rules: Power rule: d/dx(x^n) = nx^(n-1) Product rule: (fg)' = f'g + fg' Chain rule: (f(g(x)))' = f'(g(x)) * g'(x)</div>
+                  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.7rem;">
+                    <span style="background:#fee2e2;color:#ef4444;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">Study Guide</span>
+                    <span style="background:#f3f4f6;color:#555;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">math</span>
+                    <span style="background:#f3f4f6;color:#555;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">calculus</span>
+                  </div>
+                  <div style="display:flex;gap:1.2rem;align-items:center;">
+                    <span style="color:#7c3aed;cursor:pointer;font-size:1.1em;">✏️ Edit</span>
+                    <span style="color:#bbb;cursor:pointer;font-size:1.1em;">🗑️</span>
+                  </div>
+                </div>
+                <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px #ede9fe;padding:1.5rem 2rem;min-width:260px;flex:1 1 260px;max-width:340px;">
+                  <div style="font-weight:700;font-size:1.13rem;margin-bottom:0.5rem;">Essay Draft: Climate Change</div>
+                  <div style="color:#555;font-size:1.01rem;margin-bottom:0.7rem;">Climate change represents one of the most pressing challenges of our time. Rising global temperatures have led to...</div>
+                  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.7rem;">
+                    <span style="background:#fef9c3;color:#f59e42;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">Essay</span>
+                    <span style="background:#f3f4f6;color:#555;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">environment</span>
+                    <span style="background:#f3f4f6;color:#555;padding:0.2em 0.7em;border-radius:6px;font-size:0.93em;">draft</span>
+                  </div>
+                  <div style="display:flex;gap:1.2rem;align-items:center;">
+                    <span style="color:#7c3aed;cursor:pointer;font-size:1.1em;">✏️ Edit</span>
+                    <span style="color:#bbb;cursor:pointer;font-size:1.1em;">🗑️</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          } else {
+            main.innerHTML = '<div style="font-size:1.5rem;margin-top:2rem;">This feature is coming soon!</div>';
+          }
+        });
+      });
+    </script>
+  </body>
+  </html>
+              main: '<b>Citation Generator:</b><br><input type="text" id="citeInput" placeholder="Source details..." style="width:70%"> <button onclick="generateCitation()">Generate</button><div id="citationResult" style="margin-top:1em;"></div>'
+            },
+            plagiarism: {
+              nowPlaying: 'Plagiarism',
+              prompt: 'Check your text for originality.',
+              main: '<b>Plagiarism Checker:</b><br><textarea id="plagText" rows="4" style="width:90%"></textarea><br><button onclick="checkPlagiarism()">Check</button><div id="plagiarismResult" style="margin-top:1em;"></div>'
+            },
+            calculator: {
+              nowPlaying: 'Calculator',
+              prompt: 'Perform quick calculations.',
+              main: '<b>Calculator:</b><br><input type="text" id="calcInput" style="width:60%"><button onclick="calculate()">=</button><span id="calcResult" style="margin-left:1em;"></span>'
+            },
+            music: {
+              nowPlaying: 'Music',
+              prompt: 'Listen to focus music.',
+              main: '<b>Music Player:</b><br><audio controls src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>'
+            },
+            settings: {
+              nowPlaying: 'Settings',
+              prompt: 'Adjust your preferences.',
+              main: '<b>Settings:</b><br>Theme: <select id="themeSelect"><option value="mossy">Mossy</option><option value="normie">Normie</option><option value="royal">Royal</option></select>'
+            }
+          };
+
+          // --- Right panel tab wiring ---
+          function setRightTab(tab) {
+            document.querySelectorAll('.right-tab').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('rightContent').innerHTML = '<b>' + rightTabContent[tab].nowPlaying + '</b><br><span style="color:var(--neon-green);font-size:0.98em;">' + rightTabContent[tab].prompt + '</span>';
+            document.getElementById('nowPlaying').innerHTML = 'NOW PLAYING: <span style="color:var(--neon-green)">' + rightTabContent[tab].nowPlaying + '</span>';
+            document.getElementById('promptBox').textContent = rightTabContent[tab].prompt;
+              document.getElementById('mainConsole').innerHTML = `
+                <div class="agent-content agent-chat">Chat agent area. (Chat with your assistant here.)</div>
+                <div class="agent-content agent-planner" style="display:none;">Planner agent area. (Organize your tasks and schedule.)</div>
+                <div class="agent-content agent-flashcards" style="display:none;">Flashcards agent area. (Study and review flashcards.)</div>
+                <div class="agent-content agent-citations" style="display:none;">Citations agent area. (Manage and generate citations.)</div>
+                <div class="agent-content agent-plagiarism" style="display:none;">Plagiarism agent area. (Check for originality.)</div>
+                <div class="agent-content agent-calculator" style="display:none;">Calculator agent area. (Perform calculations.)</div>
+                <div class="agent-content agent-music" style="display:none;">Music agent area. (Play and manage music.)</div>
+                <div class="agent-content agent-settings" style="display:none;">Settings agent area. (Configure your app preferences.)</div>
+                <div class="agent-content agent-roundtable" style="display:none;">Roundtable Delegation area. (Multi-agent orchestration.)</div>
+              `;
+          }
+          document.getElementById('tab-chat').onclick = () => setRightTab('chat');
+          document.getElementById('tab-planner').onclick = () => setRightTab('planner');
+          document.getElementById('tab-flashcards').onclick = () => setRightTab('flashcards');
+          document.getElementById('tab-citations').onclick = () => setRightTab('citations');
+          document.getElementById('tab-plagiarism').onclick = () => setRightTab('plagiarism');
+          document.getElementById('tab-calculator').onclick = () => setRightTab('calculator');
+          document.getElementById('tab-music').onclick = () => setRightTab('music');
+          document.getElementById('tab-settings').onclick = () => setRightTab('settings');
+
+          // --- Minimal backend stubs for demo ---
+          window.sendChat = function() {
+            const input = document.getElementById('chatInput');
+            const history = document.getElementById('chatHistory');
+            if (input && input.value) {
+              // Simple browser AI: echo or basic response
+              let response = 'AI: ' + (input.value.match(/hello|hi|hey/i) ? 'Hello! How can I help you today?' : 'I am a student helper AI.');
+              history.innerHTML += '<div style="margin:0.5em 0;color:var(--neon-green);">You: ' + input.value + '</div>';
+              history.innerHTML += '<div style="margin:0.5em 0;color:#fff;">' + response + '</div>';
+              input.value = '';
+            }
+          }
+          window.addTask = function() {
+            const input = document.getElementById('taskInput');
+            const date = document.getElementById('taskDate');
+            const list = document.getElementById('taskList');
+            if (input && input.value && date && date.value) {
+              list.innerHTML += '<li>' + input.value + ' <span style="color:#aaa">(' + date.value + ')</span></li>';
+              input.value = '';
+              date.value = '';
+            }
+          }
+          window.addFlashcard = function() {
+            const q = document.getElementById('flashQ');
+            const a = document.getElementById('flashA');
+            const list = document.getElementById('flashcardList');
+            if (q && a && q.value && a.value) {
+              list.innerHTML += '<div style="margin:0.5em 0;padding:0.5em;background:#222;border-radius:6px;"><b>Q:</b> ' + q.value + '<br><b>A:</b> ' + a.value + '</div>';
+              q.value = '';
+              a.value = '';
+            }
+          }
+          window.generateCitation = function() {
+            const input = document.getElementById('citeInput');
+            const result = document.getElementById('citationResult');
+            if (input && input.value) {
+              result.innerHTML = '<div style="color:var(--neon-green);margin-top:0.5em;">Citation generated for: ' + input.value + '</div>';
+              input.value = '';
+            }
+          }
+          window.checkPlagiarism = function() {
+            const text = document.getElementById('plagText');
+            const result = document.getElementById('plagiarismResult');
+            if (text && text.value) {
+              result.innerHTML = '<div style="color:var(--neon-green);margin-top:0.5em;">No plagiarism detected.</div>';
+            }
+          }
+          window.calculate = function() {
+            const input = document.getElementById('calcInput');
+            const result = document.getElementById('calcResult');
+            if (input && input.value) {
+              try {
+                result.textContent = eval(input.value);
+              } catch {
+                result.textContent = 'Error';
+              }
+            }
+          }
+          // Settings theme change
+          document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'themeSelect') {
+              document.body.classList.remove('theme-normie', 'theme-royal');
+              if (e.target.value === 'normie') document.body.classList.add('theme-normie');
+              if (e.target.value === 'royal') document.body.classList.add('theme-royal');
+            }
+          });
+        </script>
+      <div class="right-visualizer">
+        <div class="bar" style="height: 30px;"></div>
+        <div class="bar" style="height: 18px;"></div>
+        <div class="bar" style="height: 40px;"></div>
+        <div class="bar" style="height: 22px;"></div>
+        <div class="bar" style="height: 35px;"></div>
+        <div class="bar" style="height: 12px;"></div>
+        <div class="bar" style="height: 28px;"></div>
+        <div class="bar" style="height: 20px;"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

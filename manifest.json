@@ -1,27 +1,27 @@
 {
-  "name": "Student Helper",
-  "short_name": "StudentHelper",
-  "description": "A distraction-free student assistant tool",
-  "start_url": "/index.html#editor",
+  "name": "Nora - Student Helper",
+  "short_name": "Nora",
+  "description": "Your all-in-one study companion for managing classes, notes, flashcards, and more",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
-  "scope": "/",
-  "icons": [
-    {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23ffffff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' font-family='Arial'>📚</text></svg>",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
-  ],
+  "background_color": "#f8f9fb",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [],
   "categories": ["education", "productivity"],
-  "screenshots": [
+  "screenshots": [],
+  "shortcuts": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect width='540' height='720' fill='%23f5f5f5'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='64' font-family='Arial'>📚 Student Helper</text></svg>",
-      "sizes": "540x720",
-      "type": "image/svg+xml",
-      "form_factor": "narrow"
+      "name": "New Note",
+      "short_name": "Note",
+      "description": "Create a new note",
+      "url": "./index.html?section=editor"
+    },
+    {
+      "name": "Flashcards",
+      "short_name": "Study",
+      "description": "Study with flashcards",
+      "url": "./index.html?section=flashcards"
     }
   ]
 }
